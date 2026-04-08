@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HeroVerse — MCU Intelligence System</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+  <!-- Our CSS File -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════
+       HUD DECORATIONS (background fx)
+  ═══════════════════════════════════ -->
+  <div class="scanline"></div>
+  <div class="hud-tl"></div>
+  <div class="hud-br"></div>
+
+
+  <!-- ══════════════════════════════════
+       BOOT SCREEN (JARVIS startup)
+  ═══════════════════════════════════ -->
+  <div id="boot">
+    <div class="boot-logo">HERO<span>VERSE</span></div>
+    <div class="boot-sub">// MCU INTELLIGENCE SYSTEM v3.0</div>
+
+    <!-- Boot terminal lines injected by JS -->
+    <div class="boot-lines" id="blines"></div>
+
+    <!-- Boot progress bar -->
+    <div class="boot-prog-wrap">
+      <div class="boot-prog-track">
+        <div class="boot-prog-fill" id="bbar"></div>
+      </div>
+      <div class="boot-pct" id="bpct">0%</div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════
+       HEADER / NAVBAR
+  ═══════════════════════════════════ -->
+  <header>
+    <!-- Logo -->
+    <div class="logo">
+      <svg viewBox="0 0 38 38" fill="none">
+        <polygon points="19,2 36,10 36,28 19,36 2,28 2,10"
+          stroke="#e62429" stroke-width="1.5" fill="rgba(230,36,41,.08)" />
+        <polygon points="19,8 30,14 30,25 19,30 8,25 8,14"
+          stroke="rgba(0,200,255,.3)" stroke-width=".8" fill="none" />
+        <text x="19" y="23" text-anchor="middle"
+          font-family="Orbitron" font-size="10" fill="#e62429" font-weight="900">H</text>
+      </svg>
+      <div>
+        <div class="logo-text">HERO<span>VERSE</span></div>
+        <span class="logo-sub">MCU INTELLIGENCE SYSTEM</span>
+      </div>
+    </div>
+
+    <!-- Navigation links — onclick calls gotoSec() in script.js -->
+    <nav>
+      <a class="active" onclick="gotoSec('dash', this)">DASHBOARD</a>
+      <a onclick="gotoSec('heroes', this)">HEROES</a>
+      <a onclick="gotoSec('marvel', this)">MARVEL</a>
+      <a onclick="gotoSec('dc', this)">DC</a>
+      <a onclick="gotoSec('timeline', this)">TIMELINE</a>
+      <a onclick="gotoSec('favs', this)">
+        FAVS <span class="fav-badge" id="fbadge">0</span>
+      </a>
+    </nav>
+
+    <!-- Status indicator -->
+    <div class="hdr-right">
+      <div class="sdot"></div>
+      <span class="slbl" id="slbl">LOADING…</span>
+    </div>
+  </header>
+
+
+  <!-- ══════════════════════════════════
+       MAIN CONTENT AREA
+       Each <section> is one "page"
+  ═══════════════════════════════════ -->
+  <main>
+
+    <!-- ── DASHBOARD ── -->
+    <section class="section active" id="section-dash">
+      <div class="sec-hdr">
+        <div>
+          <div class="sec-lbl">// SYSTEM OVERVIEW</div>
+          <h1 class="sec-h1">HERO<span>VERSE</span> DASHBOARD</h1>
+        </div>
+      </div>
+      <!-- Content injected by initDash() in script.js -->
+      <div id="dash-body">
+        <div class="loader">
+          <div class="lring"></div>
+          <div class="ltxt">INITIALIZING DASHBOARD…</div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ── ALL HEROES ── -->
+    <section class="section" id="section-heroes">
+      <div class="sec-hdr">
+        <div>
+          <div class="sec-lbl">// ALL UNIVERSES</div>
+          <h1 class="sec-h1">ALL <span>HEROES</span></h1>
+          <div class="sec-count" id="heroes-count"></div>
+        </div>
+        <div class="controls">
+          <div class="sw">
+            <span class="sw-ic">⌕</span>
+            <input type="text" id="hsearch" placeholder="SEARCH NAME…" oninput="filterHeroes()" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Alignment filter buttons -->
+      <div class="frow" id="align-filters">
+        <button class="fb on"  onclick="setAlignFilter('all', this)">ALL</button>
+        <button class="fb"     onclick="setAlignFilter('good', this)">HEROES</button>
+        <button class="fb"     onclick="setAlignFilter('bad', this)">VILLAINS</button>
+        <button class="fb"     onclick="setAlignFilter('neutral', this)">NEUTRAL</button>
+      </div>
+
+      <div id="heroes-body"></div>
+      <div id="heroes-pg" class="pg" style="display:none;"></div>
+    </section>
+
+
+    <!-- ── MARVEL UNIVERSE ── -->
+    <section class="section" id="section-marvel">
+      <div class="sec-hdr">
+        <div>
+          <div class="sec-lbl">// MARVEL COMICS</div>
+          <h1 class="sec-h1">MARVEL <span>UNIVERSE</span></h1>
+          <div class="sec-count" id="marvel-count"></div>
+        </div>
+        <div class="controls">
+          <div class="sw">
+            <span class="sw-ic">⌕</span>
+            <input type="text" id="msearch" placeholder="SEARCH HERO…" oninput="filterMarvel()" />
+          </div>
+        </div>
+      </div>
+      <div id="marvel-body"></div>
+      <div id="marvel-pg" class="pg" style="display:none;"></div>
+    </section>
+
+
+    <!-- ── DC UNIVERSE ── -->
+    <section class="section" id="section-dc">
+      <div class="sec-hdr">
+        <div>
+          <div class="sec-lbl">// DC COMICS</div>
+          <h1 class="sec-h1">DC <span>UNIVERSE</span></h1>
+          <div class="sec-count" id="dc-count"></div>
+        </div>
+        <div class="controls">
+          <div class="sw">
+            <span class="sw-ic">⌕</span>
+            <input type="text" id="dsearch" placeholder="SEARCH HERO…" oninput="filterDC()" />
+          </div>
+        </div>
+      </div>
+      <div id="dc-body"></div>
+      <div id="dc-pg" class="pg" style="display:none;"></div>
+    </section>
+
+
+    <!-- ── TIMELINE ── -->
+    <section class="section" id="section-timeline">
+      <div class="sec-hdr">
+        <div>
+          <div class="sec-lbl">// FIRST APPEARANCES</div>
+          <h1 class="sec-h1">HERO <span>TIMELINE</span></h1>
+        </div>
+      </div>
+      <div id="tl-body">
+        <div class="loader">
+          <div class="lring"></div>
+          <div class="ltxt">BUILDING TIMELINE…</div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ── FAVOURITES ── -->
+    <section class="section" id="section-favs">
+      <div class="sec-hdr">
+        <div>
+          <div class="sec-lbl">// SAVED</div>
+          <h1 class="sec-h1">FAVOURITE <span>HEROES</span></h1>
+        </div>
+        <div class="controls">
+          <button class="fb" onclick="clearFavs()"
+            style="border-color:rgba(230,36,41,.4);color:var(--red);">CLEAR ALL</button>
+        </div>
+      </div>
+      <div id="favs-body"></div>
+    </section>
+
+  </main>
+
+
+  <!-- ══════════════════════════════════
+       HERO DETAIL MODAL
+  ═══════════════════════════════════ -->
+  <div class="mov" id="hmodal" onclick="closeMov(event)">
+    <div class="mbox">
+      <button class="mclose" onclick="closeM()">✕</button>
+      <div id="mcontent"></div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════
+       COMPARE MODAL
+  ═══════════════════════════════════ -->
+  <div class="mov" id="cmodal" onclick="closeCmov(event)">
+    <div class="mbox" style="max-width:760px;">
+      <button class="mclose" onclick="closeCM()">✕</button>
+      <div id="ccontent"></div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════
+       COMPARE BAR (bottom sticky)
+  ═══════════════════════════════════ -->
+  <div id="cmpbar">
+    <span class="clbl">⚔ COMPARE</span>
+    <div class="cslots" id="cslots"></div>
+    <div class="cbtns">
+      <button class="cbtn cbtn-go" onclick="runCmp()">COMPARE ▶</button>
+      <button class="cbtn cbtn-cl" onclick="clearCmp()">CLEAR</button>
+    </div>
+  </div>
+
+
+  <!-- Our JS File (loaded last so DOM is ready) -->
+  <script src="script.js"></script>
+
+</body>
+</html>
